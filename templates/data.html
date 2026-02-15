@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1 class="display-4 text-white">Query Dataset</h1>
+    <p class="lead text-light opacity-75">Filter and view custom subsets of the planets dataset</p>
+    <hr class="border-light opacity-50">
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-lg"> 
+                <div class="card-header bg-primary text-white">
+                    <h5 class="m-0">Query Options</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="/data" id="queryForm">
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark d-block">Columns to Display:</label>
+                            <div class="d-flex flex-wrap gap-3 p-3 border rounded bg-light">
+                                {% for col in available_columns %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="cols" value="{{ col }}" id="check_{{ col }}"
+                                        {% if cols and col in cols %}checked{% endif %}>
+                                    <label class="form-check-label text-dark" for="check_{{ col }}">
+                                        {{ col }}
+                                    </label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <small class="form-text text-muted">Select at least one column to display in the results table.</small>
+                        </div>
+
+                        <h6 class="mt-4 fw-bold text-primary">Filter Options (Optional):</h6>
+                        <div class="row g-3"> 
+                            <div class="col-md-4">
+                                <label for="filter_col" class="form-label text-dark">Filter Column:</label>
+                                <select class="form-select" id="filter_col" name="filter_col">
+                                    <option value="">-- No Filter --</option>
+                                    {% for col in available_columns %}
+                                    <option value="{{ col }}" {% if filter_col == col %}selected{% endif %}>
+                                        {{ col }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="op" class="form-label text-dark">Operator:</label>
+                                <select class="form-select" id="op" name="op">
+                                    <option value="==" {% if op == "==" %}selected{% endif %}> == (equals)</option>
+                                    <option value="!=" {% if op == "!=" %}selected{% endif %}> != (not equals)</option>
+                                    <option value=">" {% if op == ">" %}selected{% endif %}> > (greater than)</option>
+                                    <option value="<" {% if op == "<" %}selected{% endif %}> < (less than)</option>
+                                    <option value=">=" {% if op == ">=" %}selected{% endif %}> >= (greater or equal)</option>
+                                    <option value="<=" {% if op == "<=" %}selected{% endif %}> <= (less or equal)</option>
+                                    <option value="contains" {% if op == "contains" %}selected{% endif %}>contains</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label for="value" class="form-label text-dark">Value:</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="value" 
+                                       name="value" 
+                                       placeholder="Filter value" 
+                                       value="{{ value }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 mt-3">
+                            <label for="limit" class="form-label fw-bold text-dark">Maximum Rows:</label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="limit" 
+                                   name="limit" 
+                                   min="1" 
+                                   max="1000" 
+                                   value="{{ limit }}" 
+                                   style="width: 150px;">
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                            <button type="submit" class="btn btn-primary px-4">🔍 Run Query</button>
+                            <a href="/data" class="btn btn-outline-secondary px-4">🔄 Reset</a>
+                            
+                            {% if result_html %}
+                            <a href="/data/export?cols={{ cols|join(',') }}&filter_col={{ filter_col }}&op={{ op }}&value={{ value }}&limit={{ limit }}" 
+                               class="btn btn-outline-success px-4 ms-md-auto">
+                               📥 Download CSV
+                            </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error_message %}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="alert alert-danger shadow-sm" role="alert">
+                <strong>Error:</strong> {{ error_message }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mt-5 mb-5"> 
+        <div class="col-md-12">
+            {% if result_html %}
+                <div class="card shadow-lg">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="m-0">Query Results</h5>
+                        <span class="badge bg-light text-dark">Data Found</span>
+                    </div>
+                    <div class="card-body p-0"> <div class="table-responsive">
+                            {{ result_html | safe }}
+                        </div>
+                    </div>
+                </div>
+            {% elif query_executed %}
+                <div class="alert alert-warning shadow-sm text-center py-5">
+                    <div class="mb-3" style="font-size: 3rem;">🔍</div>
+                    <h5>No Results Found</h5>
+                    <p class="text-muted">No planets match your current filter criteria. Try broadening your search.</p>
+                    <a href="/data" class="btn btn-sm btn-outline-warning">Clear Filters</a>
+                </div>
+            {% else %}
+                <div class="card border-dashed bg-light opacity-75 shadow-sm">
+                    <div class="card-body text-center py-0">
+                        <div class="mb-3" style="font-size: 2rem; opacity: 0.5;">🪐</div>
+                        <h5 class="text-secondary">Ready to explore the Universe?</h5>
+                        <p class="text-muted">Select your desired columns and click <strong>"Run Query"</strong> to see the data.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('queryForm').addEventListener('submit', function() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.style.display = 'flex';
+            }
+        });
+    </script>
+
+{% endblock %}

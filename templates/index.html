@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center text-md-start">
+        <h1 class="display-4 text-white">Welcome to Seaborn Web Explorer</h1>
+        <p class="lead text-light">Explore the <strong>{{ dataset_name }}</strong> dataset with interactive analysis</p>
+        <hr class="border-light opacity-50">
+    </div>
+</div>
+
+<div class="row mt-4 g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="m-0">Dataset Information</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Dataset Name:</span> <strong>{{ dataset_name }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Rows:</span> <strong>{{ num_rows }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Columns:</span> <strong>{{ num_cols }}</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="m-0">Available Columns</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for col in columns %}
+                    <div class="col-6 mb-2">
+                        <span class="text-success">✓</span> {{ col }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h3 class="text-white mb-4">What would you like to do?</h3>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card text-center hover-card">
+                    <div class="card-body p-5">
+                        <h2 class="mb-3">📊</h2>
+                        <h5 class="card-title fw-bold">Explore Questions</h5>
+                        <a href="/questions" class="btn btn-primary mt-3 w-50">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card text-center hover-card">
+                    <div class="card-body p-5">
+                        <h2 class="mb-3">🔍</h2>
+                        <h5 class="card-title fw-bold">Query Data</h5>
+                        <a href="/data" class="btn btn-success mt-3 w-50">Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

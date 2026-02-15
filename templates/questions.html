@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="display-4 text-white">Analysis Questions</h1>
+    <p class="lead text-light opacity-75">Select a question to view the analysis and visualization</p>
+    <hr class="border-light opacity-50">
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h4 class="text-white">Select a Question:</h4>
+            <div class="btn-group-vertical w-100 mt-3" role="group">
+                {% for i in range(1, 6) %}
+                <a href="/questions/{{ i }}" class="btn btn-outline-light btn-lg text-start mb-2 
+                   {% if question_selected and question_id == i %}active{% endif %}">
+                    <strong>Question {{ i }}:</strong> 
+                    {% if i == 1 %}Discoveries per Year (Top 10)
+                    {% elif i == 2 %}Planet Counts by Detection Method (Top 10)
+                    {% elif i == 3 %}Orbital Period Distribution
+                    {% elif i == 4 %}Mass Distribution
+                    {% elif i == 5 %}Average Mass by Detection Method (Top 10){% endif %}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger mt-4" role="alert">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if question_selected %}
+    <div class="row mt-5 mb-5">
+        <div class="col-md-12">
+            <div class="card shadow-lg border-0"> 
+                <div class="card-header bg-success text-white">
+                    <h3 class="m-0">{{ title }}</h3>
+                </div>
+                
+                <div class="card-body">
+                    {% if result %}
+                        <h5 class="text-primary mb-3">Analysis Results:</h5>
+                        <div class="data-summary mb-4 text-center">
+                            {{ result | safe }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <h5 class="mb-3 text-primary">Interactive Visualization:</h5>
+                        
+                        {% if is_plotly %}
+                            <div class="graph-wrapper plotly-container">
+                                {{ graph_html | safe }}
+                            </div>
+                        {% elif plot_filename %}
+                            <div class="text-center">
+                                <img src="/static/plots/{{ plot_filename }}" 
+                                     alt="Analysis Plot" 
+                                     class="img-fluid border rounded shadow mt-2" 
+                                     style="max-height: 500px;">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div> </div> </div>
+    </div>
+    {% else %}
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <div class="alert alert-info bg-opacity-75 text-dark" role="alert">
+                <h5>👆 Please select a question from the list above</h5>
+                <p class="mb-0">Each question will display the analysis results and a corresponding interactive visualization.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <script>
+        document.querySelectorAll('.btn-outline-light').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const loader = document.getElementById('loader');
+                if (loader) loader.style.display = 'flex';
+            });
+        });
+    </script>
+{% endblock %}

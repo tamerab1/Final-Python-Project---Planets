@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Venv Files
+venv/
+.venv/
+env/
+
+#  IDE Settings
+.vscode/
+.idea/
+
+# Os generated files
+.DS_Store
+Thumbs.db
+
+# Data & Plots
+plots/*.png
+data/*.csv
+
+
+
+

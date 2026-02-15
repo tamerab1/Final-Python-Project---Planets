@@ -61,7 +61,7 @@ Launch the Server:
 Bash
 uvicorn main:app --reload
 Access the app at: http://127.0.0.1:8000
-
+```
 -----------------------------------------------------------------------------------------------------------------------------
 ## 📊 Sample Insights
 Orbital Period Analysis: By applying a Logarithmic Scale, we successfully visualized planetary orbits ranging from 0.01 to 730,000 days, revealing that the majority of discovered planets have an orbital period between 10 and 100 days.

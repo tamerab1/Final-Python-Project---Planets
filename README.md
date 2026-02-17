@@ -69,4 +69,4 @@ Orbital Period Analysis: By applying a Logarithmic Scale, we successfully visual
 Mass Distribution: By filtering outliers (planets > 2 Jupiter Masses), the analysis provides a high-resolution view of Earth-like and gas-giant distributions.
 
 
-## Developed as a Final Project for the Python Development Course.
+## Developed as a Final Project for the Python Development Course By Tamer
